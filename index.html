@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stephan's Music App</title>
+<style>
+:root{--bg:#090b0a;--panel:#121513;--panel2:#1a1f1c;--line:#292f2b;--text:#f5f7f5;--muted:#a1aaa4;--green:#1ed760;--green2:#b6ffce}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:112px}
+button,input,select{font:inherit}button{cursor:pointer;border:0}button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.app{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:calc(100vh - 100px);gap:10px;padding:10px}
+.sidebar{background:#101310;border:1px solid #1b211d;border-radius:14px;padding:18px 12px;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;padding:3px 8px 12px;font-weight:800;letter-spacing:-.04em;font-size:18px}.brand-mark{width:32px;height:32px;border-radius:10px;background:var(--green);color:#071109;display:grid;place-items:center;font-weight:900}
+.nav{display:grid;gap:5px}.nav button{display:flex;align-items:center;gap:12px;text-align:left;background:transparent;color:var(--muted);padding:11px 12px;border-radius:9px;font-weight:650}.nav button.active,.nav button:hover{background:#202721;color:white}.nav .ico{width:20px;text-align:center;font-size:17px}.side-label{color:#818a83;text-transform:uppercase;font-size:10px;font-weight:800;letter-spacing:.14em;padding:0 12px;margin-bottom:6px}.side-note{margin-top:auto;color:#7f8982;font-size:12px;line-height:1.5;padding:10px}
+main{min-width:0;background:linear-gradient(180deg,#18231b 0,#101310 290px);border:1px solid #1b211d;border-radius:14px;overflow:hidden}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 22px;position:sticky;top:0;z-index:2;background:rgba(13,17,14,.84);backdrop-filter:blur(12px);border-bottom:1px solid #252c27}
+.round-btn{width:34px;height:34px;border-radius:50%;background:#202721;color:#fff;font-size:18px}.searchbox{flex:1;max-width:520px;display:flex;gap:9px;align-items:center;background:#242a25;border:1px solid #333b35;border-radius:999px;padding:0 15px}.searchbox input{width:100%;background:transparent;border:0;outline:none;color:white;padding:11px 0}.searchbox input::placeholder{color:#9aa49d}.import-btn{background:var(--green);color:#061108;border-radius:999px;padding:10px 15px;font-size:13px;font-weight:850;white-space:nowrap}.import-btn:hover,.primary:hover{background:#63f08f}
+.page{padding:26px 26px 42px}.eyebrow{text-transform:uppercase;letter-spacing:.16em;color:var(--green2);font-size:11px;font-weight:850;margin:0 0 10px}.hero{padding:18px 0 28px;display:flex;justify-content:space-between;gap:24px;align-items:end}.hero h1{font-size:clamp(32px,5vw,56px);line-height:1.02;letter-spacing:-.055em;margin:0 0 12px}.hero p{color:#c2cbc4;max-width:600px;line-height:1.55;margin:0}.hero-badge{border:1px solid #435a48;color:var(--green2);padding:9px 12px;border-radius:999px;font-size:12px;white-space:nowrap}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 14px}.section-head h2{font-size:21px;letter-spacing:-.035em;margin:0}.subtle{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}.card{background:#171c18;border:1px solid #252d27;border-radius:12px;padding:12px;min-width:0;transition:background .15s,transform .15s}.card:hover{background:#202820;transform:translateY(-2px)}.cover{width:100%;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#153f27,#7bf5a0);display:grid;place-items:center;overflow:hidden;margin-bottom:12px;color:#08140c;font-size:38px;font-weight:900;letter-spacing:-.08em}.cover img{width:100%;height:100%;object-fit:cover}.card h3{font-size:14px;margin:0 0 5px;overflow-wrap:anywhere}.card p{font-size:12px;color:var(--muted);margin:0 0 12px;overflow-wrap:anywhere}.card-actions{display:flex;gap:8px}.small-btn{background:#2a332c;color:white;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:750}.small-btn.play{background:var(--green);color:#071109}.empty{border:1px dashed #3a453d;background:rgba(15,20,16,.5);border-radius:13px;padding:26px;text-align:center;color:var(--muted);line-height:1.6}.empty strong{display:block;color:#eef4ef;font-size:16px;margin-bottom:6px}.hidden{display:none!important}
+.artist-hero{display:flex;align-items:end;gap:22px;padding:14px 0 28px}.artist-avatar{width:150px;height:150px;flex:0 0 150px;border-radius:50%;background:linear-gradient(140deg,#193c26,#55ef8d);display:grid;place-items:center;color:#071109;font-size:48px;font-weight:900}.artist-hero h1{font-size:clamp(34px,5vw,60px);margin:0 0 8px;letter-spacing:-.055em}.artist-hero p{color:var(--muted);margin:0}.track-list{display:grid;gap:4px}.track-row{display:grid;grid-template-columns:35px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px;border-radius:8px}.track-row:hover{background:#222a24}.track-num{color:var(--muted);text-align:center;font-size:13px}.track-title{font-size:14px;font-weight:700}.track-artist{font-size:12px;color:var(--muted);margin-top:3px}.track-controls{display:flex;gap:7px}
+.release{display:grid;grid-template-columns:minmax(180px,300px) minmax(0,1fr);gap:28px;align-items:end;margin:12px 0 28px}.release-cover{aspect-ratio:1;border-radius:12px;background:linear-gradient(145deg,#143e27,#63f294);display:grid;place-items:center;color:#061109;font-size:64px;font-weight:900;overflow:hidden}.release-cover img{width:100%;height:100%;object-fit:cover}.release h1{font-size:clamp(34px,5vw,58px);letter-spacing:-.055em;line-height:1.02;margin:0 0 14px;overflow-wrap:anywhere}.release p{color:var(--muted);margin:8px 0}
+.library-tools{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0 20px}.chip{border:1px solid #374039;background:#202721;color:#dce4de;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:750}.chip.active{background:#d9ffe4;color:#0b1b10;border-color:#d9ffe4}
+.player{position:fixed;left:10px;right:10px;bottom:10px;z-index:10;background:rgba(20,25,21,.96);backdrop-filter:blur(16px);border:1px solid #323b34;border-radius:14px;min-height:82px;display:grid;grid-template-columns:minmax(150px,1fr) minmax(220px,1.3fr) minmax(130px,1fr);gap:18px;align-items:center;padding:12px 18px;box-shadow:0 12px 45px #0008}
+.now{display:flex;gap:11px;align-items:center;min-width:0}.mini-cover{width:50px;height:50px;border-radius:7px;background:linear-gradient(135deg,#153e27,#5df18b);display:grid;place-items:center;color:#071109;font-weight:900;flex:0 0 50px;overflow:hidden}.mini-cover img{width:100%;height:100%;object-fit:cover}.now-meta{min-width:0}.now-meta strong,.now-meta span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.now-meta strong{font-size:13px}.now-meta span{font-size:11px;color:var(--muted);margin-top:4px}.like-btn{background:transparent;color:#9aa59c;font-size:20px}.like-btn.liked{color:var(--green)}
+.controls{display:grid;gap:8px;justify-items:center;min-width:0}.control-row{display:flex;align-items:center;gap:17px}.control{background:transparent;color:#c7d0c9;font-size:17px;padding:2px}.control.main{background:var(--green);color:#08110a;width:34px;height:34px;border-radius:50%;font-size:15px;font-weight:900}.progress-row{display:flex;align-items:center;gap:8px;width:100%;color:#a3ada5;font-size:10px}.progress{flex:1;height:5px;border-radius:999px;background:#3b443d;overflow:hidden;cursor:pointer}.progress-fill{height:100%;width:0;background:var(--green);border-radius:999px}.volume{display:flex;align-items:center;gap:9px;justify-content:end;color:#b8c2ba}.volume input{width:100px;accent-color:var(--green)}
+.modal-backdrop{position:fixed;inset:0;background:#000b;z-index:20;display:grid;place-items:center;padding:18px}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:#151a16;border:1px solid #374239;border-radius:16px;padding:22px}.modal h2{margin:0 0 7px}.modal p{color:var(--muted);font-size:13px;line-height:1.5}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px;margin:10px 0}.field.full{grid-column:1/-1}.field label{font-size:12px;color:#c3cdc5;font-weight:750}.field input{width:100%;border:1px solid #38433b;border-radius:8px;background:#0e120f;color:white;padding:11px}.field input[type=file]{font-size:12px;padding:9px}.modal-actions{display:flex;justify-content:end;gap:8px;margin-top:18px}.secondary{background:#303831;color:white;border-radius:999px;padding:10px 15px;font-weight:750}.primary{background:var(--green);color:#071109;border-radius:999px;padding:10px 15px;font-weight:850}
+.toast{position:fixed;right:20px;top:20px;z-index:30;background:#e2ffe9;color:#0a1a0e;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:800;box-shadow:0 8px 30px #0005}
+footer{padding:0 28px 14px;color:#69756d;font-size:11px}
+@media(max-width:800px){.app{grid-template-columns:68px minmax(0,1fr);padding:6px;gap:6px}.sidebar{padding:14px 7px;align-items:center}.brand{padding:0}.brand span:not(.brand-mark),.nav .label,.side-label,.side-note{display:none}.nav{width:100%}.nav button{justify-content:center;padding:12px 0}.nav .ico{width:auto}.page{padding:20px 15px 30px}.topbar{padding:12px;flex-wrap:wrap}.searchbox{order:3;flex-basis:100%;max-width:none}.import-btn{margin-left:auto}.player{left:6px;right:6px;bottom:6px;padding:9px;grid-template-columns:minmax(0,1fr) auto;gap:10px}.controls{grid-column:2;grid-row:1/3}.control-row{gap:11px}.progress-row{display:none}.volume{display:none}.now{grid-column:1;grid-row:1}.like-btn{display:none}.grid{grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:9px}.release{grid-template-columns:1fr;gap:18px}.release-cover{max-width:260px}.artist-hero{align-items:center;gap:15px}.artist-avatar{width:90px;height:90px;flex-basis:90px;font-size:30px}.hero{align-items:start;flex-direction:column}.hero-badge{display:none}}
+@media(max-width:420px){.brand-mark{width:30px;height:30px}.app{grid-template-columns:54px minmax(0,1fr)}.sidebar{padding:12px 4px}.page{padding:17px 11px}.player{grid-template-columns:minmax(0,1fr) auto}.mini-cover{width:40px;height:40px;flex-basis:40px}.control-row{gap:8px}.control{font-size:15px}.control.main{width:31px;height:31px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">S</span><span>Stephan's Music</span></div>
+    <nav class="nav" aria-label="Main navigation">
+      <button class="active" data-page="home"><span class="ico">⌂</span><span class="label">Home</span></button>
+      <button data-page="search"><span class="ico">⌕</span><span class="label">Search</span></button>
+      <button data-page="library"><span class="ico">▤</span><span class="label">Your Library</span></button>
+    </nav>
+    <div>
+      <div class="side-label">Your collection</div>
+      <nav class="nav">
+        <button data-page="liked"><span class="ico">♡</span><span class="label">Liked Songs</span></button>
+        <button data-page="playlists"><span class="ico">♫</span><span class="label">Playlists</span></button>
+      </nav>
+    </div>
+    <div class="side-note">Your music. Your projects.<br>Made for Stephan D.</div>
+  </aside>
+  <main>
+    <div class="topbar">
+      <button class="round-btn" id="backBtn" aria-label="Go back">‹</button>
+      <button class="round-btn" id="forwardBtn" aria-label="Go forward">›</button>
+      <label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Search songs, artists, singles…" aria-label="Search music"></label>
+      <button class="import-btn" id="openImport">＋ Add music</button>
+    </div>
+    <div id="pageContent" class="page"></div>
+  </main>
+</div>
+<footer>Stephan's Music App · Audio files are selected from your device and played in this browser. This starter version does not upload your music to a server.</footer>
+
+<div class="player">
+  <div class="now">
+    <div class="mini-cover" id="playerCover">S</div>
+    <div class="now-meta"><strong id="playerTitle">Not playing</strong><span id="playerArtist">Select a song</span></div>
+    <button class="like-btn" id="playerLike" title="Like song" aria-label="Like song">♡</button>
+  </div>
+  <div class="controls">
+    <div class="control-row">
+      <button class="control" id="prevBtn" title="Previous track" aria-label="Previous track">|‹</button>
+      <button class="control main" id="playBtn" title="Play" aria-label="Play">▶</button>
+      <button class="control" id="nextBtn" title="Next track" aria-label="Next track">›|</button>
+    </div>
+    <div class="progress-row"><span id="currentTime">0:00</span><div class="progress" id="progressBar" role="slider" aria-label="Track position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><div class="progress-fill" id="progressFill"></div></div><span id="duration">0:00</span></div>
+  </div>
+  <div class="volume"><span>🔊</span><input type="range" id="volume" min="0" max="1" step="0.01" value="0.8" aria-label="Volume"></div>
+</div>
+
+<div class="modal-backdrop hidden" id="importModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <h2 id="modalTitle">Add your music</h2>
+    <p>Select an audio file from your device and enter its details. This demo keeps the selected audio in the current browser session; it does not upload it anywhere.</p>
+    <form id="musicForm">
+      <div class="form-grid">
+        <div class="field full"><label for="audioFile">Audio file *</label><input id="audioFile" type="file" accept="audio/*" required></div>
+        <div class="field"><label for="songName">Song title *</label><input id="songName" required maxlength="100" placeholder="e.g. 100 Million Decades"></div>
+        <div class="field"><label for="artistName">Artist *</label><input id="artistName" required maxlength="100" placeholder="e.g. Stephan D"></div>
+        <div class="field"><label for="releaseType">Release type</label><select id="releaseType"><option value="Single">Single</option><option value="Album track">Album track</option><option value="Demo">Demo</option></select></div>
+        <div class="field"><label for="releaseYear">Release year</label><input id="releaseYear" inputmode="numeric" maxlength="4" placeholder="2026"></div>
+        <div class="field full"><label for="coverFile">Cover artwork (optional)</label><input id="coverFile" type="file" accept="image/*"></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary" id="cancelImport">Cancel</button><button class="primary" type="submit">Add to library</button></div>
+    </form>
+  </div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const state = {
+    tracks: [], liked: new Set(), currentId: null, page: 'home', pageStack: [],
+    search: '', audioUrls: new Map(), coverUrls: new Map(), isPlaying: false
+  };
+  const audio = $('audio');
+  audio.volume = Number($('volume').value);
+  const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const currentTrack = () => state.tracks.find(t => t.id === state.currentId) || null;
+  const fmt = secs => { if (!Number.isFinite(secs)) return '0:00'; const n = Math.floor(secs); return Math.floor(n/60)+':'+String(n%60).padStart(2,'0'); };
+  function toast(message) {
+    $('toast').textContent = message; $('toast').classList.remove('hidden');
+    clearTimeout(toast.timer); toast.timer = setTimeout(()=>$('toast').classList.add('hidden'), 2600);
+  }
+  function go(page, detail=null) {
+    state.pageStack.push({page:state.page, detail:state.detail});
+    state.page = page; state.detail = detail; render();
+  }
+  function back() {
+    const previous = state.pageStack.pop();
+    if (previous) { state.page=previous.page; state.detail=previous.detail; render(); }
+  }
+  const coverMarkup = (track, big=false) => {
+    const cover = track && state.coverUrls.get(track.id);
+    return cover ? `<img alt="" src="${cover}">` : `<span>${escapeHTML((track?.artist || 'S').trim().slice(0,1).toUpperCase() || 'S')}</span>`;
+  };
+  function trackCard(track) {
+    return `<article class="card">
+      <button class="cover" data-action="play" data-id="${track.id}" aria-label="Play ${escapeHTML(track.title)}">${coverMarkup(track)}</button>
+      <h3>${escapeHTML(track.title)}</h3><p>${escapeHTML(track.artist)} · ${escapeHTML(track.type)}</p>
+      <div class="card-actions"><button class="small-btn play" data-action="play" data-id="${track.id}">▶ Play</button><button class="small-btn" data-action="single" data-id="${track.id}">Single page</button></div>
+    </article>`;
+  }
+  function trackRow(track, index) {
+    return `<div class="track-row">
+      <div class="track-num">${index+1}</div>
+      <button data-action="play" data-id="${track.id}" style="background:transparent;color:inherit;text-align:left;min-width:0;padding:0">
+        <div class="track-title">${escapeHTML(track.title)}</div><div class="track-artist">${escapeHTML(track.artist)}</div>
+      </button>
+      <div class="track-controls"><button class="small-btn" data-action="like" data-id="${track.id}">${state.liked.has(track.id)?'♥':'♡'}</button><button class="small-btn play" data-action="single" data-id="${track.id}">Single</button></div>
+    </div>`;
+  }
+  function emptyState(title, detail, button=true) {
+    return `<div class="empty"><strong>${title}</strong>${detail}${button?'<br><br><button class="primary" data-action="import">＋ Add your first track</button>':''}</div>`;
+  }
+  function homePage() {
+    const tracks = state.tracks;
+    return `<section class="hero"><div><p class="eyebrow">YOUR MUSIC SPACE</p><h1>Good evening,<br>Stephan.</h1><p>Your songs, singles, and creative projects in one place. Add your own audio files to start building your library.</p></div><span class="hero-badge">✦ Stephan D collection</span></section>
+    <div class="section-head"><h2>Recently added</h2><span class="subtle">${tracks.length} track${tracks.length===1?'':'s'}</span></div>
+    ${tracks.length ? `<div class="grid">${tracks.slice().reverse().slice(0,6).map(trackCard).join('')}</div>` : emptyState('Your library starts here','Add an audio file and its title to create your first track card.')}
+    <div class="section-head"><h2>Popular</h2><span class="subtle">Your artist catalogue</span></div>
+    ${tracks.length ? `<div class="track-list">${tracks.slice(0,5).map(trackRow).join('')}</div>` : `<p class="subtle">Your popular tracks will appear here after you add music.</p>`}
+    <div class="section-head"><h2>Singles & releases</h2><span class="subtle">Open a release page</span></div>
+    ${tracks.length ? `<div class="grid">${tracks.filter(t=>t.type==='Single').map(trackCard).join('') || '<p class="subtle">Singles you add will appear here.</p>'}</div>` : ''}
+    `;
+  }
+  function searchPage() {
+    const q = state.search.trim().toLowerCase();
+    const results = state.tracks.filter(t => !q || (t.title+' '+t.artist+' '+t.type).toLowerCase().includes(q));
+    return `<p class="eyebrow">FIND YOUR NEXT LISTEN</p><h1>Search</h1><p class="subtle">Search your own songs and projects by title or artist.</p>
+      <div class="section-head"><h2>${q?'Search results':'All tracks'}</h2><span class="subtle">${results.length} result${results.length===1?'':'s'}</span></div>
+      ${results.length?`<div class="track-list">${results.map(trackRow).join('')}</div>`:emptyState('No matches yet',q?'Try a different title or artist.':'Add music to make it searchable.',!state.tracks.length)}`;
+  }
+  function libraryPage() {
+    return `<p class="eyebrow">YOUR COLLECTION</p><h1>Your Library</h1><div class="library-tools"><button class="chip active">All music</button><button class="chip" data-action="navigate" data-page="liked">Liked Songs</button><button class="chip" data-action="navigate" data-page="playlists">Playlists</button></div>
+    ${state.tracks.length?`<div class="track-list">${state.tracks.map(trackRow).join('')}</div>`:emptyState('Nothing in your library yet','Add your own audio files to get started.')}`;
+  }
+  function likedPage() {
+    const tracks=state.tracks.filter(t=>state.liked.has(t.id));
+    return `<p class="eyebrow">YOUR FAVORITES</p><h1>Liked Songs ♥</h1><p class="subtle">Tracks you have liked in this session.</p>${tracks.length?`<div class="track-list">${tracks.map(trackRow).join('')}</div>`:emptyState('No liked songs yet','Tap the heart beside a track to save it here.',false)}`;
+  }
+  function playlistsPage() {
+    return `<p class="eyebrow">YOUR MIXES</p><h1>Playlists</h1><div class="empty"><strong>Playlists are coming next.</strong>First, add a few songs to your library. Then we can build playlist creation and song management without pretending they work before they're implemented.</div>`;
+  }
+  function artistPage() {
+    const artist = state.detail;
+    const tracks = state.tracks.filter(t=>t.artist===artist);
+    return `<div class="artist-hero"><div class="artist-avatar">${escapeHTML((artist||'S').slice(0,1).toUpperCase())}</div><div><p class="eyebrow">ARTIST</p><h1>${escapeHTML(artist)}</h1><p>${tracks.length} track${tracks.length===1?'':'s'} in this collection</p></div></div>
+      <div class="section-head"><h2>Popular</h2><span class="subtle">Click a song to play it</span></div>
+      ${tracks.length?`<div class="track-list">${tracks.map(trackRow).join('')}</div>`:emptyState('No tracks yet','Add a song for this artist.',false)}
+      <div class="section-head"><h2>Albums & Singles</h2></div>
+      <div class="grid">${tracks.filter(t=>t.type==='Single').map(trackCard).join('') || '<p class="subtle">No singles added for this artist yet.</p>'}</div>`;
+  }
+  function singlePage() {
+    const track = state.tracks.find(t=>t.id===state.detail);
+    if (!track) return `<h1>Single not found</h1><button class="primary" data-action="navigate" data-page="home">Go Home</button>`;
+    return `<p class="eyebrow">SINGLE RELEASE</p><div class="release"><div class="release-cover">${coverMarkup(track,true)}</div><div><p class="eyebrow">SINGLE</p><h1>${escapeHTML(track.title)}</h1><p>By <button data-action="artist" data-artist="${escapeHTML(track.artist)}" style="background:none;color:var(--green2);padding:0;font-weight:800">${escapeHTML(track.artist)}</button></p><p>${escapeHTML(track.type)}${track.year?' · '+escapeHTML(track.year):''}</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:20px"><button class="primary" data-action="play" data-id="${track.id}">▶ Play</button><button class="secondary" data-action="like" data-id="${track.id}">${state.liked.has(track.id)?'♥ Liked':'♡ Like'}</button></div></div></div>
+      <div class="section-head"><h2>Track</h2></div><div class="track-list">${trackRow(track,0)}</div>`;
+  }
+  function render() {
+    document.querySelectorAll('[data-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===state.page));
+    const pages={home:homePage,search:searchPage,library:libraryPage,liked:likedPage,playlists:playlistsPage,artist:artistPage,single:singlePage};
+    $('pageContent').innerHTML=(pages[state.page]||homePage)();
+    updatePlayer();
+  }
+  function updatePlayer() {
+    const track=currentTrack();
+    $('playerTitle').textContent=track?track.title:'Not playing';
+    $('playerArtist').textContent=track?track.artist:'Select a song';
+    $('playerCover').innerHTML=track?coverMarkup(track):'S';
+    $('playerLike').textContent=track&&state.liked.has(track.id)?'♥':'♡';
+    $('playerLike').classList.toggle('liked',!!track&&state.liked.has(track.id));
+    $('playBtn').textContent=state.isPlaying?'Ⅱ':'▶';
+    $('playBtn').setAttribute('aria-label',state.isPlaying?'Pause':'Play');
+  }
+  function playTrack(id) {
+    const track=state.tracks.find(t=>t.id===id); if(!track)return;
+    if(state.currentId===id && !audio.paused) { audio.pause(); state.isPlaying=false; updatePlayer(); return; }
+    state.currentId=id;
+    const url=state.audioUrls.get(id); if(!url)return;
+    if(audio.src!==url) audio.src=url;
+    audio.play().then(()=>{state.isPlaying=true;updatePlayer();}).catch(()=>{state.isPlaying=false;updatePlayer();toast('Playback could not start. Tap Play again or check the audio file.');});
+    updatePlayer();
+  }
+  function togglePlay() {
+    const track=currentTrack();
+    if(!track) { toast('Add a song, then select it to play.'); return; }
+    if(audio.paused) {
+      if(!audio.src) audio.src=state.audioUrls.get(track.id);
+      audio.play().then(()=>{state.isPlaying=true;updatePlayer();}).catch(()=>toast('Playback could not start.')); 
+    } else { audio.pause(); state.isPlaying=false; }
+    updatePlayer();
+  }
+  function nextTrack(direction=1) {
+    if(!state.tracks.length)return;
+    const idx=state.tracks.findIndex(t=>t.id===state.currentId);
+    const next=(idx<0?0:(idx+direction+state.tracks.length)%state.tracks.length);
+    playTrack(state.tracks[next].id);
+  }
+  function toggleLike(id) {
+    const track=state.tracks.find(t=>t.id===id); if(!track)return;
+    state.liked.has(id)?state.liked.delete(id):state.liked.add(id);
+    render();
+  }
+  function openImport() { $('importModal').classList.remove('hidden'); $('songName').focus(); }
+  function closeImport() { $('importModal').classList.add('hidden'); $('musicForm').reset(); }
+  $('openImport').addEventListener('click',openImport);
+  $('cancelImport').addEventListener('click',closeImport);
+  $('importModal').addEventListener('click',e=>{if(e.target===$('importModal'))closeImport();});
+  $('musicForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const file=$('audioFile').files[0]; if(!file)return;
+    if(!file.type.startsWith('audio/')){toast('Please choose an audio file.');return;}
+    const id='track-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+    const track={id,title:$('songName').value.trim(),artist:$('artistName').value.trim(),type:$('releaseType').value,year:$('releaseYear').value.trim(),fileName:file.name};
+    state.tracks.push(track);state.audioUrls.set(id,URL.createObjectURL(file));
+    const cover=$('coverFile').files[0];if(cover)state.coverUrls.set(id,URL.createObjectURL(cover));
+    closeImport();state.page='library';state.pageStack=[];render();toast('Added “'+track.title+'” to your library!');
+  });
+  document.querySelectorAll('.nav button').forEach(btn=>btn.addEventListener('click',()=>{state.pageStack=[];state.page=btn.dataset.page;state.detail=null;render();}));
+  $('pageContent').addEventListener('click',e=>{
+    const btn=e.target.closest('[data-action]'); if(!btn)return;
+    const action=btn.dataset.action,id=btn.dataset.id;
+    if(action==='play')playTrack(id);
+    if(action==='single')go('single',id);
+    if(action==='like')toggleLike(id);
+    if(action==='artist')go('artist',btn.dataset.artist);
+    if(action==='navigate'){state.page=btn.dataset.page;state.detail=null;render();}
+    if(action==='import')openImport();
+  });
+  $('searchInput').addEventListener('input',e=>{state.search=e.target.value;if(state.page!=='search'){state.pageStack.push({page:state.page,detail:state.detail});state.page='search';}render();});
+  $('backBtn').addEventListener('click',back);
+  $('forwardBtn').addEventListener('click',()=>toast('Use a page card or sidebar to navigate.'));
+  $('playBtn').addEventListener('click',togglePlay);
+  $('prevBtn').addEventListener('click',()=>nextTrack(-1));
+  $('nextBtn').addEventListener('click',()=>nextTrack(1));
+  $('playerLike').addEventListener('click',()=>{if(state.currentId)toggleLike(state.currentId);});
+  $('volume').addEventListener('input',e=>audio.volume=Number(e.target.value));
+  audio.addEventListener('play',()=>{state.isPlaying=true;updatePlayer();});
+  audio.addEventListener('pause',()=>{state.isPlaying=false;updatePlayer();});
+  audio.addEventListener('ended',()=>{state.isPlaying=false;nextTrack(1);});
+  audio.addEventListener('timeupdate',()=>{
+    $('currentTime').textContent=fmt(audio.currentTime);$('duration').textContent=fmt(audio.duration);
+    const pct=audio.duration?audio.currentTime/audio.duration*100:0;$('progressFill').style.width=pct+'%';$('progressBar').setAttribute('aria-valuenow',String(Math.round(pct)));
+  });
+  function seek(e){const r=$('progressBar').getBoundingClientRect();if(audio.duration&&r.width){audio.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*audio.duration;}}
+  $('progressBar').addEventListener('click',seek);
+  $('progressBar').addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&audio.duration)audio.currentTime=Math.min(audio.duration,audio.currentTime+5);if(e.key==='ArrowLeft'&&audio.duration)audio.currentTime=Math.max(0,audio.currentTime-5);});
+  render();
+})();
+</script>
+</body>
+</html>
